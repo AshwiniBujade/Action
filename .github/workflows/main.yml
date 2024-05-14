@@ -35,6 +35,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: mocha-report
-          path: cypress/results 
+          path: cypress/reports 
         
          

@@ -29,5 +29,12 @@ jobs:
 
       - name: Run Cypress tests
         run: npx cypress run
+
+      - name: Upload Mocha Report
+        if: always()  
+        uses: actions/upload-artifact@v3
+        with:
+          name: mocha-report
+          path: cypress/results 
         
          

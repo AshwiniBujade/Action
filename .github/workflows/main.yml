@@ -66,7 +66,9 @@ jobs:
         run: npm install cypress --save-dev
 
       - name: Run Cypress tests
-        run: npx cypress run --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        run: npx cypress run --record --key $CYPRESS_RECORD_KEY
 
       - name: Upload Mocha Report
         if: always()
@@ -74,6 +76,3 @@ jobs:
         with:
           name: mocha-report
           path: cypress/reports
-
-        
-         

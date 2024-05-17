@@ -36,6 +36,50 @@
 #         with:
 #           name: mocha-report
 #           path: cypress/reports 
+
+
+
+# name: Cypress Tests
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   cypress-run:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '18.20.2'
+
+#       - name: Install dependencies
+#         run: npm install
+
+#       - name: Install Cypress
+#         run: npm install cypress --save-dev
+
+#       - name: Run Cypress tests
+#         env:
+#           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+#         run: npx cypress run --record --key $CYPRESS_RECORD_KEY
+
+#       - name: Upload Mocha Report
+#         if: always()
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: mocha-report
+#           path: cypress/reports
+
 name: Cypress Tests
 
 on:
@@ -49,6 +93,11 @@ on:
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        container: [1, 2] # Adjust the number of containers based on your needs
 
     steps:
       - name: Checkout repository
@@ -65,14 +114,15 @@ jobs:
       - name: Install Cypress
         run: npm install cypress --save-dev
 
-      - name: Run Cypress tests
+      - name: Run Cypress tests in parallel
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        run: npx cypress run --record --key $CYPRESS_RECORD_KEY
+        run: npx cypress run --record --key $CYPRESS_RECORD_KEY --parallel --group ${{ matrix.container }}
 
       - name: Upload Mocha Report
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: mocha-report
+          name: mocha-report-${{ matrix.container }}
           path: cypress/reports
+
